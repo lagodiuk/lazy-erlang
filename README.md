@@ -4,6 +4,7 @@ lazy-erlang
 Implementation of lazy calculations concept in Erlang
 
 ### Example ###
+```erlang
 1>
 1> c(lazy).
 {ok,lazy}
@@ -31,3 +32,4 @@ Implementation of lazy calculations concept in Erlang
  {8,55},
  {9,89},
  {10,144}]
+```

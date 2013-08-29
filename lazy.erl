@@ -1,6 +1,18 @@
 -module(lazy).
--export([take/2, filter/2, zip/2]).
--export([fib/0, seq/2, seq/1]).
+-export([take/2, filter/2, zip/2, transform/2]).
+-export([fib/0, seq/2, seq/1, primes/0]).
+
+primes() ->
+	fun() ->
+		primes(seq(2))
+	end.
+primes(Seq) ->
+	{Prime, Gen} = Seq(),
+	NextPrimeGen =
+	fun() ->
+		primes(filter(Gen, fun(X) -> X rem Prime /= 0 end))
+	end,
+	{Prime, NextPrimeGen}.
 
 seq(Start) ->
 	seq(Start, 1).
@@ -55,4 +67,12 @@ zip(LazySeq1, LazySeq2) ->
 		{Item1, Gen1} = LazySeq1(),
 		{Item2, Gen2} = LazySeq2(),
 		{{Item1, Item2}, zip(Gen1, Gen2)}
+	end.
+
+transform(LazySeq, Transformator) ->
+	fun() ->
+		{Item, Gen} = LazySeq(),
+		TransformedItem = Transformator(Item),
+		TransformGen = transform(Gen, Transformator),
+		{TransformedItem, TransformGen}
 	end.
